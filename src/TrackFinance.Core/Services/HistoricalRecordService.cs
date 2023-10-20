@@ -33,6 +33,15 @@ public class HistoricalRecordService : IHistoricalRecordService
   }
 
 
+  /*
+   * Necesario un pequeño servicio que se ejecute cada x tiempo, para traer los datos historicos de los usuarios
+   * También considerar qué usuarios son los que más solicitan el servicio
+   * Analizar cada cuanto es necesario actualizar el historial
+   * 
+   * Si crece mucho, analizar la posibilidad de usar DstributedCache
+   * 
+   * 
+  */
   private async Task<List<Transaction>> LoadListAsync(int userId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default)
   {
     var cacheKey = "$_userId_" + userId.ToString();
