@@ -13,7 +13,7 @@ using TrackFinance.Core;
 using TrackFinance.Infrastructure;
 using TrackFinance.Infrastructure.Data;
 using TrackFinance.Web;
-using TrackFinance.Web.Endpoints.Expense;
+using TrackFinance.Web.Endpoints.Expenses;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,9 +54,9 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
   containerBuilder.RegisterModule(new DefaultInfrastructureModule(builder.Environment.EnvironmentName == "Development"));
 });
 
-//builder.Services.AddFluentValidationAutoValidation();
-//builder.Services.AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateExpenseValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateExpensesValidator>();
 //builder.Logging.AddAzureWebAppDiagnostics(); add this if deploying to Azure
 
 var app = builder.Build();

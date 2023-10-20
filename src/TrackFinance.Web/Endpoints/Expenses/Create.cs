@@ -5,13 +5,16 @@ using Swashbuckle.AspNetCore.Annotations;
 using TrackFinance.Core.TransactionAgregate;
 using TrackFinance.Core.TransactionAgregate.Enum;
 using TrackFinance.SharedKernel.Interfaces;
+using TrackFinance.Web.Endpoints.Incomes;
 
-namespace TrackFinance.Web.Endpoints.Incomes;
+namespace TrackFinance.Web.Endpoints.Expenses;
 
 public class Create : EndpointBaseAsync
-    .WithRequest<CreateIncomesRequest>
-    .WithActionResult<CreateIncomesResponse>
+    .WithRequest<CreateExpensesRequest>
+    .WithActionResult<CreateExpensesResponse>
 {
+
+
   private readonly IRepository<Transaction> _repository;
 
   public Create(IRepository<Transaction> repository)
@@ -19,25 +22,26 @@ public class Create : EndpointBaseAsync
     _repository = repository;
   }
 
-  [HttpPost("/Incomes")]
+  [HttpPost("/Expenses")]
   [Produces("application/json")]
   [SwaggerOperation(
-    Summary = "Creates a new Incomes",
-    Description = "Creates a new Incomes",
-    OperationId = "Incomes.Create",
-    Tags = new[] { "IncomesEndpoints" })
+    Summary = "Creates a new Expenses",
+    Description = "Creates a new Expenses",
+    OperationId = "Expenses.Create",
+    Tags = new[] { "ExpensesEndpoints" })
   ]
-  public override async Task<ActionResult<CreateIncomesResponse>> HandleAsync(CreateIncomesRequest request, CancellationToken cancellationToken = default)
+  public override async Task<ActionResult<CreateExpensesResponse>> HandleAsync(CreateExpensesRequest request, CancellationToken cancellationToken = default)
   {
     var newExpense = new Transaction(request.Description,
                                      request.Amount,
                                      request.ExpenseType,
                                      request.ExpenseDate,
                                      request.UserId,
-                                     TransactionType.Income);
+                                     TransactionType.Expense);
+    
     var createdItem = await _repository.AddAsync(newExpense, cancellationToken);
 
-    var response = new CreateIncomesResponse
+    var response = new CreateExpensesResponse
     (
     statusResult: (int)HttpStatusCode.OK,
     expensesId: createdItem.Id
@@ -45,4 +49,5 @@ public class Create : EndpointBaseAsync
 
     return Ok(response);
   }
+
 }

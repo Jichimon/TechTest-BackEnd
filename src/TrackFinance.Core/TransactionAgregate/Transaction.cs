@@ -7,7 +7,7 @@ using TrackFinance.SharedKernel.Interfaces;
 namespace TrackFinance.Core.TransactionAgregate;
 public class Transaction : EntityBase, IAggregateRoot
 {
-  public string Description { get; private set; }
+  public string Description { get; private set; } = string.Empty;
   public decimal Amount { get; private set; }
   public TransactionDescriptionType TransactionDescriptionType { get; private set; }
   public DateTime ExpenseDate { get; private set; }
@@ -26,9 +26,9 @@ public class Transaction : EntityBase, IAggregateRoot
     TransactionType = transactionType;
   }
 
-  public Transaction()
-  {
-  }
+
+  public Transaction() { }
+
 
   public void UpdateValue(string description, decimal amount, TransactionDescriptionType transactionDescriptionType, DateTime expenseDate, int userId, TransactionType transactionType)
   {

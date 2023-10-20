@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using TrackFinance.Web;
-using TrackFinance.Web.Endpoints.Expense;
+using TrackFinance.Web.Endpoints.Expenses;
 using Xunit;
 
 namespace TrackFinance.FunctionalTests.ApiEndpoints.Expenses;

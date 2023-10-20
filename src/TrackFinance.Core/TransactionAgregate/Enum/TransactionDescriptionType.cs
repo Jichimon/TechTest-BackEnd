@@ -10,6 +10,7 @@ public enum TransactionDescriptionType
   VariousExpenses,
   Salary,
   Investments,
-  Gifts
+  Gifts,
+  Car
 }
 
