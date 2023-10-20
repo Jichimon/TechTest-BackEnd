@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Core\Specifications\**" />
+    <EmbeddedResource Remove="Core\Specifications\**" />
+    <None Remove="Core\Specifications\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Core\Services\ToDoItemSearchService_GetAllIncompleteItems.cs" />
     <Compile Remove="Core\Services\ToDoItemSearchService_GetNextIncompleteItem.cs" />
   </ItemGroup>
@@ -40,7 +46,6 @@
 
   <ItemGroup>
     <Folder Include="Core\Services\" />
-    <Folder Include="Core\Specifications\" />
   </ItemGroup>
 
 </Project>

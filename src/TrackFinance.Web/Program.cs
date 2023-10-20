@@ -29,6 +29,9 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 string connectionString = builder.Configuration.GetConnectionString("SqliteConnection");  //Configuration.GetConnectionString("DefaultConnection");
 
+
+builder.Services.AddMemoryCache();
+
 builder.Services.AddDbContext(connectionString);
 builder.Services.AddControllers(cfg => { cfg.ReturnHttpNotAcceptable = true; })
               .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

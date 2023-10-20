@@ -31,7 +31,7 @@ public class GetById : EndpointBaseAsync
   public override async Task<ActionResult<GetIncomeByIdResponse>> HandleAsync([FromRoute] GetIncomeByIdRequest request,
       CancellationToken cancellationToken)
   {
-    var transaction = new TransactionById(request.IncomeId, TransactionType.Income);
+    var transaction = new TransactionByIdSpec(request.IncomeId, TransactionType.Income);
     var entity = await _repository.GetBySpecAsync(transaction, cancellationToken);
     if (entity == null) return NotFound();
 

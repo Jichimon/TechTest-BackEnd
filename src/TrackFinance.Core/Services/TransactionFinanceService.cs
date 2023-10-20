@@ -17,6 +17,21 @@ public class TransactionFinanceService : ITransactionFinanceService
     _repository = repository;
   }
 
+  public async Task<Result<List<TransactionDataDto>>> GetTransactionsByDateAsync(int userId, DateTime startDate, DateTime endDate, DateType dateType, CancellationToken cancellationToken = default)
+  {
+    var itemsByDate = await _repository.ListAsync(new TransactionsByDateSpec(userId, startDate, endDate), cancellationToken);
+
+    if (!itemsByDate.Any()) return Result<List<TransactionDataDto>>.NotFound();
+
+    switch (dateType)
+    {
+      case DateType.Day:   return GetListTransactionByDay(itemsByDate);
+      case DateType.Week:  return GetListTransactionByWeek(itemsByDate);
+      case DateType.Month: return GetListTransactionByMonth(itemsByDate);
+      default: return Result<List<TransactionDataDto>>.NotFound();
+    }
+  }
+
   public async Task<Result<List<TransactionDataDto>>> GetTransactionItemsByAsync(DateType dateType, int userId, TransactionType transactionType, CancellationToken cancellationToken = default)
   {
     switch (dateType)

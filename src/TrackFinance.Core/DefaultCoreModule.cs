@@ -9,5 +9,8 @@ public class DefaultCoreModule : Module
   {
     builder.RegisterType<TransactionFinanceService>()
         .As<ITransactionFinanceService>().InstancePerLifetimeScope();
+
+    builder.RegisterType<HistoricalRecordService>()
+        .As<IHistoricalRecordService>().InstancePerLifetimeScope();
   }
 }

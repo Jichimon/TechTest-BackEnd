@@ -4,9 +4,9 @@ using TrackFinance.Core.TransactionAgregate.Enum;
 
 namespace TrackFinance.Core.TransactionAgregate.Specifications;
 
-public class TransactionById : Specification<Transaction>, ISingleResultSpecification
+public class TransactionByIdSpec : Specification<Transaction>, ISingleResultSpecification
 {
-  public TransactionById(int expenseId, TransactionType transactionType)
+  public TransactionByIdSpec(int expenseId, TransactionType transactionType)
   {
     Query
         .Where(project => project.Id == expenseId

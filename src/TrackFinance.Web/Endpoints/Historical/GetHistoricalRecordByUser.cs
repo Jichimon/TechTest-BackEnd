@@ -1,9 +1,11 @@
 ﻿using System.Net.Mime;
 using Ardalis.ApiEndpoints;
+using Ardalis.Result;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using TrackFinance.Core.TransactionAgregate;
-using TrackFinance.SharedKernel.Interfaces;
+using TrackFinance.Core.Interfaces;
+
 
 namespace TrackFinance.Web.Endpoints.Historical;
 
@@ -11,11 +13,11 @@ public class GetHistoricalRecordByUser : EndpointBaseAsync
   .WithRequest<GetHistoricalRecordByUserRequest>
   .WithActionResult<GetHistoricalRecordByUserResponse>
 {
-  private readonly IRepository<Transaction> _repository;
+  private readonly IHistoricalRecordService _historicalRecordService;
 
-  public GetHistoricalRecordByUser(IRepository<Transaction> repository)
+  public GetHistoricalRecordByUser(IHistoricalRecordService historicalRecordService)
   {
-    _repository = repository;
+    _historicalRecordService = historicalRecordService;
   }
 
   [Produces(MediaTypeNames.Application.Json)]
@@ -26,19 +28,29 @@ public class GetHistoricalRecordByUser : EndpointBaseAsync
       OperationId = "HistoricalRecords.GetHistoricalRecordByUser",
       Tags = new[] { "HistoricalRecordsEndpoints" })
   ]
-  public override async Task<ActionResult<GetHistoricalRecordByUserResponse>> HandleAsync([FromRoute] GetHistoricalRecordByUserRequest request, CancellationToken cancellationToken = default) =>
-    Ok(new GetHistoricalRecordByUserResponse
+  public override async Task<ActionResult<GetHistoricalRecordByUserResponse>> HandleAsync([FromRoute] GetHistoricalRecordByUserRequest request, CancellationToken cancellationToken = default) {
+    var response = await _historicalRecordService.GetTransactionsByDateAsync(request.UserId, request.StartDate, request.EndDate);
+
+    if (response.Status == ResultStatus.Invalid) return BadRequest(response.ValidationErrors);
+    if (response.Status == ResultStatus.NotFound) return NotFound();
+
+    if (response.Status == ResultStatus.Ok)
     {
-      HistoricalRecord = (await _repository.ListAsync(cancellationToken))
-         .Where(expense => expense.UserId == request.UserId)
-         .Where(date => Convert.ToDateTime(date.ExpenseDate.ToString("d")) >= request.StartDate && Convert.ToDateTime(date.ExpenseDate.ToString("d")) <= request.EndDate)
-         .Select(expense => new HistoricalRecord(
-                                               description: expense.Description,
-                                               transactionDescriptionType: expense.TransactionDescriptionType,
-                                               amount: expense.Amount,
-                                               expenseDate: expense.ExpenseDate,
-                                               transactionType: expense.TransactionType))
-         .OrderBy(d => d.expenseDate)
-         .ToList()
-    });
+      var records = response.Value.Select(expense => new HistoricalRecord(
+                            description: expense.Description,
+                            transactionDescriptionType: expense.TransactionDescriptionType,
+                            amount: expense.Amount,
+                            expenseDate: expense.ExpenseDate,
+                            transactionType: expense.TransactionType))
+                           .OrderBy(d => d.expenseDate)
+                           .ToList();
+      
+      return Ok(new GetHistoricalRecordByUserResponse
+      {
+        HistoricalRecord = records
+      });
+    }
+
+    return Ok(response);
+  }
 }

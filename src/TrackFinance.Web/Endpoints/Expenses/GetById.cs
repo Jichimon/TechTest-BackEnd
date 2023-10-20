@@ -31,7 +31,7 @@ public class GetById : EndpointBaseAsync
   ]
   public override async Task<ActionResult<GetExpenseByIdResponse>> HandleAsync([FromRoute] GetExpenseByIdRequest request, CancellationToken cancellationToken = default)
   {
-    var transaction = new TransactionById(request.ExpenseId, Core.TransactionAgregate.Enum.TransactionType.Expense);
+    var transaction = new TransactionByIdSpec(request.ExpenseId, Core.TransactionAgregate.Enum.TransactionType.Expense);
     var entity = await _repository.GetByIdAsync(transaction, cancellationToken);
 
     if (entity is null) return NotFound();
